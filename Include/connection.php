@@ -57,32 +57,14 @@ class mysqldb
         // ");
     }
 
-    public function create_Table_Usuario()
-    {
-        $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
-        $result = $conn->query("
-        CREATE TABLE IF NOT EXISTS Usuarios(
-            nome varchar(100) not null, 
-            data_nascimento date not null , 
-            sexo varchar(100) not null, 
-            nome_materno varchar(100), 
-            cpf varchar(11) primary key not null , 
-            telefone_celular varchar(17) not null, 
-            telefone_fixo varchar(17) not null, 
-            endereco varchar(255) not null, 
-            complemento varchar(255) not null, 
-            login varchar(6) not null , 
-            senha varchar(100) not null
-            );
-        ");
-    }
+    
 
-    public function SearchLogin_Gerencia($emailUsuario,$senhaUsuario)
+    public function SearchLogin_Gerencia($NomeUsuarioGerente,$SenhaUsuarioGerente)
     {
         $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseG);
         
         $result = $conn->query("
-        SELECT nome,cpf FROM Usuario WHERE '$emailUsuario' = usuario AND md5('$senhaUsuario') = senha;
+        SELECT nome,cpf FROM Usuario WHERE '$NomeUsuarioGerente' = usuario AND md5('$SenhaUsuarioGerente') = senha;
         ");
         $resultcheck = mysqli_num_rows($result);
         if ($resultcheck == 1) {
@@ -96,6 +78,64 @@ class mysqldb
         else{
             header('location: http://localhost:8080/projeto-telecall');
             exit;
+        }
+    }
+    public function create_Table_Usuario()
+        {
+            $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
+            $result = $conn->query("
+            CREATE TABLE IF NOT EXISTS Usuarios(
+                nome varchar(100) not null, 
+                data_nascimento date not null , 
+                sexo varchar(100) not null, 
+                nome_materno varchar(100), 
+                cpf varchar(11) primary key not null , 
+                telefone_celular varchar(17) not null, 
+                telefone_fixo varchar(17) not null, 
+                endereco varchar(255) not null, 
+                complemento varchar(255) not null, 
+                login varchar(6) not null , 
+                senha varchar(100) not null
+                );
+            ");
+        }
+    public function Register_Usuario($nome ,$dataNascimento ,$sexo ,$nomeMaterno ,$cpf ,$telefoneCelular ,$telefoneFixo ,$endereco ,$complemento ,$login ,$senha){
+
+        $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
+
+        $result = "INSERT INTO Usuarios 
+        (nome, data_nascimento, sexo, nome_materno, cpf, telefone_celular, telefone_fixo, endereco, complemento, login, senha) 
+        VALUES 
+        ('$nome', '$dataNascimento', '$sexo', '$nomeMaterno', '$cpf', '$telefoneCelular', '$telefoneFixo', '$endereco', '$complemento' ,'$login', '$senha')";
+
+        if ($conn->query($result) === TRUE) {
+            header('location: http://localhost:8080/projeto-telecall/log.php');
+            exit;
+        } else {
+            echo 'Erro 404 Tente novamento mais Tarde';
+            echo "Erro: " . $sql . "<br>" . $conn->error;
+        }
+
+    }
+    public function Login_Usuario($NomeUsuario,$SenhaUsuario){
+        $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
+        
+        $result = $conn->query("
+        SELECT nome,cpf FROM Usuarios WHERE '$NomeUsuario' = nome AND md5('$SenhaUsuario') = senha;
+        ");
+        $resultcheck = mysqli_num_rows($result);
+        if ($resultcheck == 1) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                session_start();
+                $_SESSION["Usuario"] = $row['nome'];
+                header('location: http://localhost:8080/projeto-telecall');
+                exit;
+            }
+        }
+        else{
+            $this ->SearchLogin_Gerencia($NomeUsuario,$SenhaUsuario);
+            // header('location: http://localhost:8080/projeto-telecall');
+            // exit;
         }
     }
 

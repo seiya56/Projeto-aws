@@ -17,8 +17,10 @@ session_start();
     <!-- Inclui Header -->
     <?php include('./estrutura/header.php');
      include_once 'Include/connection.php';
-     $minhaConexao = new mysql();
-     $minhaConexao->create();
+     $Sql = new mysqldb();
+
+     $Sql->Create_Db();
+     $Sql->create_Table_Gerencia();
     ?>
 
     <section class="login-section container">
@@ -34,10 +36,10 @@ session_start();
             <div class="login-fundo">
                 <div class="login">
                     <h1>Fazer Login</h1>
-                    <form action="Include/Login.php" method="post" id="formulario" onsubmit="return validarForm()">
+                    <form action="Include/Login.php" method="post" id="formulario">
 
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="nome">nome</label>
+                        <input type="nome" id="email" name="nome" required>
 
                         <label for="senha">Senha</label>
                         <input type="password" id="senha" name="senha" required>
