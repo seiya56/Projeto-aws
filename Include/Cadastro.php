@@ -16,6 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     require 'connection.php';
-    $minhaConexao = new mysqldb();
+    $minhaConexao = new mysqldbUsuario();
     $minhaConexao->Register_Usuario($nome ,$dataNascimento ,$sexo ,$nomeMaterno ,$cpf ,$telefoneCelular ,$telefoneFixo ,$endereco ,$complemento ,$login ,$senha);
 }

@@ -38,7 +38,6 @@ class mysqldb
         
     public static $databaseG = 'Gerencia';
 
-    public static $databaseU = 'Telecall';
 
     public function create_Table_Gerencia()
     {
@@ -80,25 +79,62 @@ class mysqldb
             exit;
         }
     }
-    public function create_Table_Usuario()
-        {
+
+    public function create_Table_Usuario(){
             $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
             $result = $conn->query("
             CREATE TABLE IF NOT EXISTS Usuarios(
-                nome varchar(100) not null, 
-                data_nascimento date not null , 
-                sexo varchar(100) not null, 
-                nome_materno varchar(100), 
-                cpf varchar(11) primary key not null , 
-                telefone_celular varchar(17) not null, 
-                telefone_fixo varchar(17) not null, 
-                endereco varchar(255) not null, 
-                complemento varchar(255) not null, 
-                login varchar(6) not null , 
-                senha varchar(100) not null
-                );
-            ");
+            nome varchar(100) not null, 
+            data_nascimento date not null , 
+            sexo varchar(100) not null, 
+            nome_materno varchar(100), 
+            cpf varchar(11) primary key not null , 
+            telefone_celular varchar(17) not null, 
+            telefone_fixo varchar(17) not null, 
+            endereco varchar(255) not null, 
+            complemento varchar(255) not null, 
+            login varchar(6) not null , 
+            senha varchar(100) not null
+            );
+        ");
+    }
+
+
+    
+
+}
+
+
+//Classe Usuario 
+
+class mysqldbUsuario extends mysqldb {
+
+    public static $databaseU = 'Telecall';
+    $conn = new mysqli(self::$servername, self::$username, self::$password);
+
+    public function Login_Usuario($NomeUsuario,$SenhaUsuario){
+        $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
+        
+        $result = $conn->query("
+        SELECT nome,cpf FROM Usuarios WHERE '$NomeUsuario' = nome AND md5('$SenhaUsuario') = senha;
+        ");
+        $resultcheck = mysqli_num_rows($result);
+        if ($resultcheck == 1) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                session_start();
+                $_SESSION["Usuario"] = $row['nome'];
+                header('location: http://localhost:8080/projeto-telecall');
+                exit;
+            }
         }
+        else{
+            $minhaConexao = new mysqldb()
+            $minhaConexao ->SearchLogin_Gerencia($NomeUsuario,$SenhaUsuario);
+            // header('location: http://localhost:8080/projeto-telecall');
+            // exit;
+        }
+    }
+
     public function Register_Usuario($nome ,$dataNascimento ,$sexo ,$nomeMaterno ,$cpf ,$telefoneCelular ,$telefoneFixo ,$endereco ,$complemento ,$login ,$senha){
 
         $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
@@ -117,30 +153,5 @@ class mysqldb
         }
 
     }
-    public function Login_Usuario($NomeUsuario,$SenhaUsuario){
-        $conn = new mysqli(self::$servername, self::$username, self::$password, self::$databaseU);
-        
-        $result = $conn->query("
-        SELECT nome,cpf FROM Usuarios WHERE '$NomeUsuario' = nome AND md5('$SenhaUsuario') = senha;
-        ");
-        $resultcheck = mysqli_num_rows($result);
-        if ($resultcheck == 1) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                session_start();
-                $_SESSION["Usuario"] = $row['nome'];
-                header('location: http://localhost:8080/projeto-telecall');
-                exit;
-            }
-        }
-        else{
-            $this ->SearchLogin_Gerencia($NomeUsuario,$SenhaUsuario);
-            // header('location: http://localhost:8080/projeto-telecall');
-            // exit;
-        }
-    }
 
 }
-
-
-//Classe Usuario 
-
