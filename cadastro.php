@@ -98,6 +98,7 @@ session_start();
         </div>
     </main>
 
+    
     <script>
     // Função para formatar o CPF
     function formatarCPF(cpf) {

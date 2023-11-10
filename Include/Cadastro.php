@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $senha = md5($_POST["senha"]);
 
 
+    
     require 'connection.php';
     $minhaConexao = new mysqldbUsuario();
     $minhaConexao->Register_Usuario($nome ,$dataNascimento ,$sexo ,$nomeMaterno ,$cpf ,$telefoneCelular ,$telefoneFixo ,$endereco ,$complemento ,$login ,$senha);
